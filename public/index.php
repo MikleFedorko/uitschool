@@ -173,6 +173,8 @@ $table = '
         <th><span>' . @$arrowTotalSpent . '</span><a href="?sort=' . $descParam . 'total_spent">total spent, usd</a><span>' . @$arrowTotalSpent . '</span></th>
         <th><span>' . @$arrowCreatedAt . '</span><a href="?sort=' . $descParam . 'created_at">created at</a><span>' . @$arrowCreatedAt . '</span></th>
     </tr></thead>';
+
+
 foreach($arr as $row) {
     if($_REQUEST['search'] && $_REQUEST['search'] != $row['category']) continue;
     $categorySelector = showCategoriesSelector($category, $row['category'], $row['id']);
