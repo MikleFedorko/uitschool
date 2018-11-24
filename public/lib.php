@@ -1,6 +1,12 @@
 <?php
 
-function showCategoriesSelector($categoryList, $categoryNumber, $item)
+/**
+ * @param array $categoryList
+ * @param int $categoryNumber
+ * @param int $item
+ * @return string
+ */
+function showCategoriesSelector(array $categoryList, int $categoryNumber, int $item)
 {
     $categorySelector = '<form method="get">
     <input type="hidden" value="' . $item . '" name="item" /> <!-- скрытое поле с id элемента -->
@@ -10,10 +16,16 @@ function showCategoriesSelector($categoryList, $categoryNumber, $item)
         $categorySelector .= '<option value="' . $key . '" ' . $condition . '> ' . $cat . '</option>';
     }
     $categorySelector .= '</select></form>';
+
     return $categorySelector;
 }
 
-function sorter($arr, bool $descStatus)
+/**
+ * @param array $arr
+ * @param bool $descStatus
+ * @return array
+ */
+function sorter(array $arr, bool $descStatus)
 {
     if (!isset($_REQUEST['sort'])) return $arr;
 
@@ -52,7 +64,11 @@ function sorter($arr, bool $descStatus)
     return $arr;
 }
 
-function freader($filename)
+/**
+ * @param string $filename
+ * @return string
+ */
+function freader(string $filename)
 {
     if (!$fp = fopen($filename, 'r')) {
         echo "Не могу открыть файл ($filename)";
@@ -67,7 +83,12 @@ function freader($filename)
     return $mytext;
 }
 
-function fwriter($filename, $arr)
+/**
+ * @param string $filename
+ * @param array $arr
+ * @return void
+ */
+function fwriter(string $filename, array $arr)
 {
     if (!$handle = fopen($filename, 'w')) {
         echo "Не могу открыть файл ($filename)";
