@@ -31,6 +31,17 @@ $categoryJson = '{"4":"Assets","7":"Christmas","2":"Clothes","3":"Easter","5":"G
 $category = json_decode($categoryJson, true);// преобразование json строки в массив
 $descStatus = false; // начальное значение для переменной хранящей состояние обратной сортировки для проверки условий
 
+# Сохраняю в куки состояние фильтра и сортировки
+if (isset($_REQUEST['search'])) setcookie("search", $_REQUEST['search']);
+if (!isset($_REQUEST['search'])
+    && !empty($_COOKIE['search']))
+    $_REQUEST['search'] = $_COOKIE['search'];
+
+if (isset($_REQUEST['sort'])) setcookie("sort", $_REQUEST['sort']);
+if (!isset($_REQUEST['sort'])
+    && !empty($_COOKIE['sort']))
+    $_REQUEST['sort'] = $_COOKIE['sort'];
+
 if (isset($_REQUEST['sort']) && $_REQUEST['sort'][0] == '-') { // проверка параметра пришедшего из ссылки. если условие выполняется меняем значения по умолчанию
     $descStatus = true;
     $descParam = '';
