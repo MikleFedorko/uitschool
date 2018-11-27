@@ -16,10 +16,6 @@
  *
  ************************************************************************/
 
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-
 require_once('../libs/func.php');
 
 $filename = '../source/testJsonDataToSort.txt'; // закрепляет именованый ресурс, указанный в аргументе filename, за потоком.
@@ -28,7 +24,7 @@ $arrow = '&uarr;'; // начальное значение типа стрелк�
 
 # Json со списом категорий
 $categoryJson = '{"4":"Assets","7":"Christmas","2":"Clothes","3":"Easter","5":"Gameplay","8":"Halloween","6":"Release theme","1":"Scenery","10":"St. Patrick\'s","9":"St.Valentine","11":"Stylist"}';
-$category = json_decode($categoryJson, true);// преобразование json строки в массив
+$categories = json_decode($categoryJson, true);// преобразование json строки в массив
 $descStatus = false; // начальное значение для переменной хранящей состояние обратной сортировки для проверки условий
 
 # Сохраняю в куки состояние фильтра и сортировки
@@ -52,12 +48,14 @@ $mytext = freader($filename);
 $arr = json_decode($mytext, true); // преобразование json строки в массив
 
 foreach($arr as $key => $row) {
-    $arr[$key]['categoryName'] = $category[$row['category']]; // замена номеров категорий на их имена
+    $arr[$key]['categoryName'] = $categories[$row['category']]; // замена номеров категорий на их имена
 }
 
 if(isset($_REQUEST['item']) && isset($_REQUEST['update_cat'])) {
-    $arr[$_REQUEST['item']]['category'] = $_REQUEST['update_cat'];
-    fwriter($filename, $arr);
+    if($arr[$_REQUEST['item']]['category'] != $_REQUEST['update_cat']){
+        $arr[$_REQUEST['item']]['category'] = $_REQUEST['update_cat'];
+        fwriter($filename, $arr);
+    }
 }
 
 $arr = sorter($arr, $descStatus);

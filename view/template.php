@@ -1,7 +1,7 @@
 <?php
 
 $categorySelector = '<form method="get"><select name="search" class="filter"><option value="">All</option>';
-foreach ($category as $key => $cat) {
+foreach ($categories as $key => $cat) {
     if (isset($_REQUEST['search'])) {
         $condition = $_REQUEST['search'] == $key ? 'selected' : '';
     }
@@ -26,7 +26,7 @@ $content = '
 foreach ($arr as $row) {
     if (!empty($_REQUEST['search']) && $_REQUEST['search'] != $row['category']) continue;
 
-    $categorySelector = showCategoriesSelector($category, $row['category'], $row['id']); // формирование селектора категорий для текущей строки
+    $categorySelector = showCategoriesSelector($categories, $row['category'], $row['id']); // формирование селектора категорий для текущей строки
 
     # форматирование значений перед записью в переменную таблицы
     $content .= '<tr>
