@@ -94,7 +94,7 @@ function fwriter(string $filename, array $arr)
         echo "Не могу открыть файл ($filename)";
         exit;
     }
-    if (fwrite($handle, json_encode($arr)) === FALSE) {
+    if (fwrite($handle, json_encode($arr, JSON_PRETTY_PRINT)) === FALSE) {
         echo "Не могу произвести запись в файл ($filename)";
         exit;
     }

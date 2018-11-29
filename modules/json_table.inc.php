@@ -24,6 +24,20 @@ $filename = '../source/testJsonDataToSort.txt'; // закрепляет имен
 $descParam = '-'; // начальное значение параметра типа сортировки для формирования ссылки
 $arrow = '&uarr;'; // начальное значение типа стрелки
 
+//header('Content-type:application/json;charset=utf-8');
+//echo file_get_contents($filename);die;
+//$var_dump = [
+//    'pathinfo'     => pathinfo(__FILE__),
+//    'filesize'     => filesize($filename),
+//    'filetype'     => filetype($filename),
+//    'filemtime'    => filemtime('/../favicon.ico'),
+//];
+//
+//echo str_replace('\\', '',
+//    json_encode($var_dump, JSON_PRETTY_PRINT)
+//);die;
+
+
 # Json со списом категорий
 $categoryJson = '{"4":"Assets","7":"Christmas","2":"Clothes","3":"Easter","5":"Gameplay","8":"Halloween","6":"Release theme","1":"Scenery","10":"St. Patrick\'s","9":"St.Valentine","11":"Stylist"}';
 $categories = json_decode($categoryJson, true);// преобразование json строки в массив
@@ -54,7 +68,7 @@ foreach($arr as $key => $row) {
 }
 
 if(isset($_REQUEST['item']) && isset($_REQUEST['update_cat'])) {
-    if($arr[$_REQUEST['item']]['category'] != $_REQUEST['update_cat']){
+    if($arr[$_REQUEST['item']]['category'] != $_REQUEST['update_cat']) {
         $arr[$_REQUEST['item']]['category'] = $_REQUEST['update_cat'];
         fwriter($filename, $arr);
     }
@@ -66,4 +80,4 @@ if(isset($_REQUEST['sort'])) {
     $$sortOrder = $arrow; // присвоение текущей стрелки
 }
 
-include('../view/template.php');
+require_once('../view/template.php');

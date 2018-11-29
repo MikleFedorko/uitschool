@@ -48,4 +48,4 @@ $content .= '<tr>
 </tr></table>';
 //echo $content, '<p class="center">Array size: ' . sizeof($arr) . ' elements</p>'; // вывод таблицы
 
-include_once ('../view/layout.php');
+require_once ('../view/layout.php');
