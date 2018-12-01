@@ -1,5 +1,38 @@
 <?php
 
+
+/**
+ * @param $filename
+ * @return array
+ */
+function getEnvs($filename)
+{
+    $envFile = file_get_contents($filename);
+    $envData = explode('
+', $envFile);
+    $env = [];
+    foreach ($envData as $param) {
+        $item = explode('=', $param);
+        $env[trim($item[0])] = trim($item[1]);
+    }
+
+    return $env;
+}
+
+/**
+ * @param $conn
+ * @param int $id
+ */
+function auth($conn, $id)
+{
+    $current_time = time();
+    $hash = base64_encode(substr($current_time, 0, strlen($current_time) - strlen($id)) . $id . '1984' . strlen($id));
+    $_SESSION['session_hash'] = $hash;
+    setcookie('session_hash', $hash);
+    $conn->query('update users set last_login = "' . $current_time . '" where id = ' . $id);
+    header('Location: /');
+}
+
 /**
  * @param array $categoryList
  * @param int $categoryNumber

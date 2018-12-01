@@ -1,17 +1,18 @@
 <?php
 
-$categorySelector = '<form method="get"><select name="search" class="filter"><option value="">All</option>';
+$categorySelector = '<div class="float-right"><a class="btn btn-primary pull-right" href="/logout">Logout</a></div><div class="form-group">
+<form method="get"><select name="search" class="filter btn"><option value="">All</option>';
 foreach ($categories as $key => $cat) {
     if (isset($_REQUEST['search'])) {
         $condition = $_REQUEST['search'] == $key ? 'selected' : '';
     }
     $categorySelector .= '<option value="' . $key . '" ' . @$condition . '> ' . $cat . '</option>';
 }
-$categorySelector .= '</select><input type="submit" value="Send"></form>';
+$categorySelector .= '</select><input class="btn btn-success" type="submit" value="Send"></form></div>';
 
 # формирование переменной таблицы
 $content = '
-<div class="container">
+<div class="table_container">
     ' . $categorySelector . '
     <table><thead><tr style="position: sticky;top: 0px;">
             <th><span>' . @$arrowId . '</span><a href="?sort=' . $descParam . 'id">id</a><span>' . @$arrowId . '</span></th>
