@@ -14,12 +14,11 @@ if (!empty($_REQUEST['email'])
         if (!$errorMessage && $_REQUEST['password'] == $_REQUEST['confirm']) {
             $password = md5($_REQUEST['password']);
             $current_time = time();
-//            $conn->query('insert into users (email, user_password, created_at, last_login)
-//values ("' . $email . '", "' . $password . '", ' . $current_time . ', ' . $current_time . ')');
-            $conn->query('insert into users (email, user_password) values ("' . $email . '", "' . $password . '")');
+            $conn->query('insert into users (email, user_password, created_at, last_login) values ("' . $email . '", "' . $password . '", ' . $current_time . ', ' . $current_time . ')');
             $userResource = $conn->query('select id from users where email = "' . $email . '"');
             $user = $userResource->fetch_assoc();
             auth($conn, $user['id']);
+            header('Location: /profile');
         } else {
             $errorMessage .= 'Passwords not equal!';
         }

@@ -6,7 +6,7 @@ $content = '
 <form method="post">
   <input type="hidden" name="action" value="sign_up">
   <div class="form-group">
-      <button disabled class="btn-danger col-md-12">'.$errorMessage.'</button>
+      <button disabled class="btn-danger col-md-12">' . $errorMessage . '</button>
   </div>
   <div class="form-group">
     <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">

@@ -18,27 +18,17 @@
  *
  ************************************************************************/
 
-$filename = '../source/testJsonDataToSort.txt'; // закрепляет именованый ресурс, указанный в аргументе filename, за потоком.
 $descParam = '-'; // начальное значение параметра типа сортировки для формирования ссылки
 $arrow = '&uarr;'; // начальное значение типа стрелки
 
-//header('Content-type:application/json;charset=utf-8');
-
-//$result = $conn->query("select * from app_settings");
-//
-//if ($result->num_rows > 0) {
-//    while ($row = $result->fetch_assoc()) {
-//        echo '<p>' . $row['value'] . '</p>';
-//    }
-//} else {
-//    echo "0 results";
-//}
-
-//die;
-
-# Json со списом категорий
-$categoryJson = '{"4":"Assets","7":"Christmas","2":"Clothes","3":"Easter","5":"Gameplay","8":"Halloween","6":"Release theme","1":"Scenery","10":"St. Patrick\'s","9":"St.Valentine","11":"Stylist"}';
-$categories = json_decode($categoryJson, true);// преобразование json строки в массив
+$sql = 'select value from app_settings where name = "categories"';
+$categoriesData = $conn->query($sql);
+$categoriesValue = $categoriesData->fetch_assoc();
+if ($conn->error) {
+    print_r($conn->error);
+    die;
+}
+$categories = json_decode($categoriesValue['value'], true);
 $descStatus = false; // начальное значение для переменной хранящей состояние обратной сортировки для проверки условий
 
 # Сохраняю в куки состояние фильтра и сортировки
@@ -58,24 +48,33 @@ if (isset($_REQUEST['sort']) && $_REQUEST['sort'][0] == '-') { // проверк
     $arrow = '&darr;';
 }
 
-$mytext = freader($filename);
-$arr = json_decode($mytext, true); // преобразование json строки в массив
 
-foreach ($arr as $key => $row) {
-    $arr[$key]['categoryName'] = $categories[$row['category']]; // замена номеров категорий на их имена
+$sql = 'select * from user_request';
+$userRequestData = $conn->query($sql);
+$userRequest = $userRequestData->fetch_all(MYSQLI_ASSOC);
+if ($conn->error) {
+    print_r($conn->error);
+    die;
 }
 
-if (isset($_REQUEST['item']) && isset($_REQUEST['update_cat'])) {
-    if ($arr[$_REQUEST['item']]['category'] != $_REQUEST['update_cat']) {
-        $arr[$_REQUEST['item']]['category'] = $_REQUEST['update_cat'];
-        fwriter($filename, $arr);
+foreach ($userRequest as $key => $row) {
+    $userRequest[$key]['categoryName'] = $categories[$row['category']]; // замена номеров категорий на их имена
+}
+
+if (isset($_REQUEST['item'], $_REQUEST['update_cat'])) {
+    $item = array_filter($userRequest, function ($innerArray) {
+        return in_array($_REQUEST['item'], $innerArray);
+    });
+    if (array_shift($item)['category'] !== $_REQUEST['update_cat']) {
+        changeCategory($conn, $_REQUEST['item'], $_REQUEST['update_cat']);
     }
 }
 
-$arr = sorter($arr, $descStatus);
+$userRequest = sorter($userRequest, $descStatus);
 if (isset($_REQUEST['sort'])) {
     $sortOrder = 'arrow' . str_replace(' ', '', ucwords(str_replace('_', ' ', str_replace('-', '', $_REQUEST['sort'])))); // формирование имени переменной хранящей текущую стрелку
     $$sortOrder = $arrow; // присвоение текущей стрелки
 }
 
+$user = getUserData($conn, $userId);
 require_once('../view/template.php');

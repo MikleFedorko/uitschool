@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * @param $filename
  * @return array
@@ -30,7 +29,6 @@ function auth($conn, $id)
     $_SESSION['session_hash'] = $hash;
     setcookie('session_hash', $hash);
     $conn->query('update users set last_login = "' . $current_time . '" where id = ' . $id);
-    header('Location: /');
 }
 
 /**
@@ -98,38 +96,33 @@ function sorter(array $arr, bool $descStatus)
 }
 
 /**
- * @param string $filename
- * @return string
+ * @param $conn
+ * @param int $item
+ * @param int $update_cat
  */
-function freader(string $filename)
+function changeCategory($conn, int $item, int $update_cat)
 {
-    if (!$fp = fopen($filename, 'r')) {
-        echo "Не могу открыть файл ($filename)";
-        exit;
-    }
-    $mytext = ''; // пустая переменная для записи данных из файла
-    while (!feof($fp)) { // проверка что указатель файла не достиг End Of File (EOF)
-        $mytext .= fgets($fp); // функция берет чанк символо узаканной длинный из файла
-    }
-    fclose($fp); // закрывает поток
-
-    return $mytext;
+    $conn->query('update user_request set category = "' . $update_cat . '" where id = ' . $item);
+    header('Location: /');
 }
 
 /**
- * @param string $filename
- * @param array $arr
- * @return void
+ * @return bool|string|void
  */
-function fwriter(string $filename, array $arr)
+function getUserId()
 {
-    if (!$handle = fopen($filename, 'w')) {
-        echo "Не могу открыть файл ($filename)";
-        exit;
-    }
-    if (fwrite($handle, json_encode($arr, JSON_PRETTY_PRINT)) === FALSE) {
-        echo "Не могу произвести запись в файл ($filename)";
-        exit;
-    }
-    fclose($handle);
+    if(empty($_COOKIE['session_hash'])) return;
+    $session_hash = explode('1984', base64_decode($_COOKIE['session_hash']));
+    return substr($session_hash[0], strlen($session_hash[0]) - $session_hash[1]);;
+}
+
+/**
+ * @param $conn
+ * @param $userId
+ * @return mixed
+ */
+function getUserData($conn, $userId)
+{
+    $userData = $conn->query('select * from users where id = ' . $userId);
+    return $userData->fetch_assoc();
 }

@@ -1,6 +1,11 @@
 <?php
 
-$categorySelector = '<div class="float-right"><a class="btn btn-primary pull-right" href="/logout">Logout</a></div><div class="form-group">
+$categorySelector = '<div class="float-right">
+    <input value="Hello, ' . $user['user_name'] . '!" disabled  class="btn btn-classic" style="display: inline-block; width: 200px" />
+    <a class="btn btn-primary pull-right" href="/profile">Profile</a>
+    <a class="btn btn-primary pull-right" href="/logout">Logout</a>
+</div>
+<div class="form-group">
 <form method="get"><select name="search" class="filter btn"><option value="">All</option>';
 foreach ($categories as $key => $cat) {
     if (isset($_REQUEST['search'])) {
@@ -24,10 +29,13 @@ $content = '
         </tr></thead>';
 
 
-foreach ($arr as $row) {
+foreach ($userRequest as $row) {
     if (!empty($_REQUEST['search']) && $_REQUEST['search'] != $row['category']) continue;
-
-    $categorySelector = showCategoriesSelector($categories, $row['category'], $row['id']); // формирование селектора категорий для текущей строки
+    if (strpos($user['roles'], 'admin')) {
+        $categorySelector = showCategoriesSelector($categories, $row['category'], $row['id']); // формирование селектора категорий для текущей строки
+    } else {
+        $categorySelector = $row['categoryName'];
+    }
 
     # форматирование значений перед записью в переменную таблицы
     $content .= '<tr>
@@ -49,4 +57,4 @@ $content .= '<tr>
 </tr></table>';
 //echo $content, '<p class="center">Array size: ' . sizeof($arr) . ' elements</p>'; // вывод таблицы
 
-require_once ('../view/layout.php');
+require_once('../view/layout.php');
