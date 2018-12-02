@@ -57,7 +57,6 @@ if (!empty($_FILES)) {
         // You should name it uniquely.
         // DO NOT USE $_FILES['avatar']['name'] WITHOUT ANY VALIDATION !!
         // On this example, obtain safe unique name from its binary data.
-
         $destination = sprintf('../public/avatars/%s.%s',
             sha1_file($_FILES['avatar']['tmp_name']),
             $ext
