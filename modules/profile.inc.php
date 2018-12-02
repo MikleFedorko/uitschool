@@ -3,7 +3,17 @@
 $name = '';
 $destination = '/avatars/no_avatar.png';
 
-if (!empty($_FILES)) {
+$sql = 'select user_name, avatar_src from users where id = ' . $userId;
+$userData = $conn->query($sql);
+$user = $userData->fetch_assoc();
+if ($conn->error) {
+    print_r($conn->error);
+    die;
+}
+$name = $user['user_name'];
+if ($user['avatar_src']) $destination = $user['avatar_src'];
+
+if (!empty($_FILES) && empty($_REQUEST['name'])) {
     try {
 
         // Undefined | Multiple Files | $_FILES Corruption Attack
@@ -81,7 +91,7 @@ if (!empty($_FILES)) {
         }
     } catch (RuntimeException $e) {
         $destination = false;
-        echo $e->getMessage();
+//        echo $e->getMessage();
     }
 }
 
@@ -92,17 +102,6 @@ if (!empty($_REQUEST['name'])) {
         print_r($conn->error);
         die;
     }
-} else {
-    $sql = 'select user_name, avatar_src from users where id = ' . $userId;
-    $userData = $conn->query($sql);
-    $user = $userData->fetch_assoc();
-    if ($conn->error) {
-        print_r($conn->error);
-        die;
-    }
-
-    $name = $user['user_name'];
-    if ($user['avatar_src']) $destination = $user['avatar_src'];
 }
 
 include_once('../view/profile.php');
