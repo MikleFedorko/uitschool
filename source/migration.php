@@ -1,5 +1,13 @@
 <?php
 
+$categoryJson = '{"4":"Assets","7":"Christmas","2":"Clothes","3":"Easter","5":"Gameplay","8":"Halloween","6":"Release theme","1":"Scenery","10":"St. Patricks","9":"St.Valentine","11":"Stylist"}';
+$sql = "insert into app_settings (name, value) values ('categories', '" . $categoryJson . "')";
+$conn->query($sql);
+if ($conn->error) {
+    print_r($conn->error);
+    die;
+}
+
 $filename = '../source/testJsonDataToSort.txt';
 $f = file_get_contents($filename);
 $user_r = json_decode($f, true);
@@ -13,50 +21,50 @@ foreach ($user_r as $k => $r) {
     }
 }
 
+header('Location: /');
+
 /**
-
--- auto-generated definition
-create table app_settings
-(
-ID    int auto_increment
-primary key,
-name  varchar(128) not null,
-env   varchar(128) null,
-value text         null
-);
-
--- auto-generated definition
-create table user_request
-(
-id          int auto_increment
-primary key,
-asset_id    int         not null,
-user_link   varchar(64) null,
-comment     text        null,
-status      int(1)      null,
-created_by  int         null,
-updated_by  int         null,
-created_at  timestamp   null,
-updated_at  timestamp   null,
-category    int         null,
-uid         int         null,
-total_spent float       null,
-tags        text        null
-);
-
--- auto-generated definition
-create table users
-(
-id            int auto_increment
-primary key,
-user_name     varchar(128) null,
-email         varchar(128) null,
-user_password varchar(128) null,
-last_login    int(10)      null,
-created_at    int(10)      null,
-roles         varchar(128) null,
-avatar_src    varchar(255) null
-);
-
-
+ *
+ * -- auto-generated definition
+ * create table app_settings
+ * (
+ * ID    int auto_increment
+ * primary key,
+ * name  varchar(128) not null,
+ * env   varchar(128) null,
+ * value text         null
+ * );
+ *
+ * -- auto-generated definition
+ * create table user_request
+ * (
+ * id          int auto_increment
+ * primary key,
+ * asset_id    int         not null,
+ * user_link   varchar(64) null,
+ * comment     text        null,
+ * status      int(1)      null,
+ * created_by  int         null,
+ * updated_by  int         null,
+ * created_at  timestamp   null,
+ * updated_at  timestamp   null,
+ * category    int         null,
+ * uid         int         null,
+ * total_spent float       null,
+ * tags        text        null
+ * );
+ *
+ * -- auto-generated definition
+ * create table users
+ * (
+ * id            int auto_increment
+ * primary key,
+ * user_name     varchar(128) null,
+ * email         varchar(128) null,
+ * user_password varchar(128) null,
+ * last_login    int(10)      null,
+ * created_at    int(10)      null,
+ * roles         varchar(128) null,
+ * avatar_src    varchar(255) null
+ * );
  */
