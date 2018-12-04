@@ -19,7 +19,7 @@
  ************************************************************************/
 
 if (isset($_REQUEST['do']) && $_REQUEST['do'] == 'migration') {
-include_once ('../source/migration.php');
+    include_once ('../source/migration.php');
 }
 
 $descParam = '-'; // начальное значение параметра типа сортировки для формирования ссылки

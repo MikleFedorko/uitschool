@@ -61,8 +61,8 @@ create table users
 id            int auto_increment
 primary key,
 user_name     varchar(128) null,
-email         varchar(128) null,
-user_password varchar(128) null,
+email         varchar(128) not null,
+user_password varchar(128) not null,
 last_login    int(10)      null,
 created_at    int(10)      null,
 roles         varchar(128) null,
