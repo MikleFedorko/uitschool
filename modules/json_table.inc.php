@@ -18,10 +18,6 @@
  *
  ************************************************************************/
 
-if (isset($_REQUEST['do']) && $_REQUEST['do'] == 'migration') {
-    include_once ('../source/migration.php');
-}
-
 $descParam = '-'; // начальное значение параметра типа сортировки для формирования ссылки
 $arrow = '&uarr;'; // начальное значение типа стрелки
 
@@ -34,10 +30,6 @@ if ($conn->error) {
 }
 $categories = json_decode($categoriesValue['value'], true);
 
-if(!$categories){
-    echo 'No data in database. Do you want to <a href="/?do=migration">run migration</a>?';
-    die;
-}
 $descStatus = false; // начальное значение для переменной хранящей состояние обратной сортировки для проверки условий
 
 # Сохраняю в куки состояние фильтра и сортировки
@@ -56,7 +48,6 @@ if (isset($_REQUEST['sort']) && $_REQUEST['sort'][0] == '-') { // проверк
     $descParam = '';
     $arrow = '&darr;';
 }
-
 
 $sql = 'select * from user_request';
 $userRequestData = $conn->query($sql);

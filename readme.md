@@ -1,5 +1,16 @@
 # INTRO
 
+> Virtual server setup
+````
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+	ServerName alesandro	
+	ServerAlias www.alesandro.com
+	DocumentRoot /var/www/alesandro/public_html/uitschool/public
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+````
 > get code:
 ````
 git clone https://github.com/chancellorPro/uitschool
@@ -26,4 +37,12 @@ sudo gedit /etc/apache2/apache2.conf
 > Put access to /public/avatars
 ````
 sudo chmod -R 777 public/avatars
+````
+> Mysql
+
+````
+mysql -u alesandro -p
+````
+````
+create database alesandro
 ````
