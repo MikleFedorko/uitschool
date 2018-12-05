@@ -1,80 +1,63 @@
 <?php
-/************************************************************************
- *
- *  Домашнее задание
- *  1. Вывести таблицу с полями
- *  id, user_link, comment, category,total_spent, created_at,
- *  где номер категории заменить на название категории,
- *  updated_at привести к формату год-месяц-день
- *  и total_spent вывести со знаком валюты.
- *
- *  2. добавить фильтр по категориям
- *
- *  3. редактирование категорий
- *
- *  4. поиск по комментариям
- *
- *  5. Created new branch...
- *
- ************************************************************************/
 
 $descParam = '-'; // начальное значение параметра типа сортировки для формирования ссылки
 $arrow = '&uarr;'; // начальное значение типа стрелки
 
-$sql = 'select value from app_settings where name = "categories"';
-$categoriesData = $conn->query($sql);
-$categoriesValue = $categoriesData->fetch_assoc();
-if ($conn->error) {
+$sql = 'select value from app_settings where name = "categories"'; // формирование запроса для получения списка категорий
+$categoriesData = $conn->query($sql); // исполнение запроса
+$categoriesValue = $categoriesData->fetch_assoc(); // представление результата в виде массива
+if ($conn->error) { // обработка ошибок запроса
     print_r($conn->error);
     die;
 }
-$categories = json_decode($categoriesValue['value'], true);
+$categories = json_decode($categoriesValue['value'], true); // формирую массив из строки результатов запроса
 
 $descStatus = false; // начальное значение для переменной хранящей состояние обратной сортировки для проверки условий
 
-# Сохраняю в куки состояние фильтра и сортировки
+# Сохраняю в куки значение фильтра
 if (isset($_REQUEST['search'])) setcookie("search", $_REQUEST['search']);
 if (!isset($_REQUEST['search'])
     && !empty($_COOKIE['search']))
-    $_REQUEST['search'] = $_COOKIE['search'];
+    $_REQUEST['search'] = $_COOKIE['search']; // если нет фильтра в запросе, но есть в куках - использую для фильтра значение из кукис
 
+# Сохраняю в куки значение сортировки
 if (isset($_REQUEST['sort'])) setcookie("sort", $_REQUEST['sort']);
 if (!isset($_REQUEST['sort'])
     && !empty($_COOKIE['sort']))
-    $_REQUEST['sort'] = $_COOKIE['sort'];
+    $_REQUEST['sort'] = $_COOKIE['sort']; // если нет сортировки в запросе, но есть в куках - использую для сортировки значение из кукис
 
-if (isset($_REQUEST['sort']) && $_REQUEST['sort'][0] == '-') { // проверка параметра пришедшего из ссылки. если условие выполняется меняем значения по умолчанию
+if (isset($_REQUEST['sort']) && $_REQUEST['sort'][0] == '-') { // проверка параметра пришедшего в запросе. если условие выполняется меняем значения по умолчанию
     $descStatus = true;
     $descParam = '';
     $arrow = '&darr;';
 }
 
-$sql = 'select * from user_request';
-$userRequestData = $conn->query($sql);
-$userRequest = $userRequestData->fetch_all(MYSQLI_ASSOC);
-if ($conn->error) {
+$sql = 'select * from user_request'; // получаю все данные из таблицы user_request
+$userRequestData = $conn->query($sql); // выполняю запрос
+$userRequest = $userRequestData->fetch_all(MYSQLI_ASSOC); // предствляю результат в виде ассоциативного массива
+if ($conn->error) { // обрабатываю ошибки
     print_r($conn->error);
     die;
 }
 
 foreach ($userRequest as $key => $row) {
-    $userRequest[$key]['categoryName'] = $categories[$row['category']]; // замена номеров категорий на их имена
+    $userRequest[$key]['categoryName'] = $categories[$row['category']]; // добавление ключа categoryName с именем категории
 }
 
-if (isset($_REQUEST['item'], $_REQUEST['update_cat'])) {
-    $item = array_filter($userRequest, function ($innerArray) {
+if (isset($_REQUEST['item'], $_REQUEST['update_cat'])) { // проверка что пришла команда на изменение категории
+    $item = array_filter($userRequest, function ($innerArray) { // поиск в массиве строк таблицы нужной строки
         return in_array($_REQUEST['item'], $innerArray);
     });
-    if (array_shift($item)['category'] !== $_REQUEST['update_cat']) {
-        changeCategory($conn, $_REQUEST['item'], $_REQUEST['update_cat']);
+    if (array_shift($item)['category'] !== $_REQUEST['update_cat']) { // проверка на то что в строке записана не та категория, которая пришла в запросе
+        changeCategory($conn, $_REQUEST['item'], $_REQUEST['update_cat']); // функция записи новой категории
     }
 }
 
-$userRequest = sorter($userRequest, $descStatus);
-if (isset($_REQUEST['sort'])) {
+$userRequest = sorter($userRequest, $descStatus); // подключение функции сортировки
+if (isset($_REQUEST['sort'])) { // проверка на параметр сортировки в запросе
     $sortOrder = 'arrow' . str_replace(' ', '', ucwords(str_replace('_', ' ', str_replace('-', '', $_REQUEST['sort'])))); // формирование имени переменной хранящей текущую стрелку
     $$sortOrder = $arrow; // присвоение текущей стрелки
 }
 
 $user = getUserData($conn, $userId);
-require_once('../view/template.php');
+require_once('../view/template.php'); // подключаю представление

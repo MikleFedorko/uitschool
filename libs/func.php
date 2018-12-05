@@ -6,16 +6,46 @@
  */
 function getEnvs($filename)
 {
-    $envFile = file_get_contents($filename);
+    $envFile = file_get_contents($filename); // получение содержимого файла .env
     $envData = explode('
-', $envFile);
+', $envFile); // построчное разбиение на элементы массива
     $env = [];
-    foreach ($envData as $param) {
-        $item = explode('=', $param);
-        $env[trim($item[0])] = trim($item[1]);
+    foreach ($envData as $param) { // цикл по строкам
+        $item = explode('=', $param); // разбиение по знаку =
+        $env[trim($item[0])] = trim($item[1]); // формирование массива $env с удалением лишних пробелов
     }
 
-    return $env;
+    return $env; // возвращаемое функцией значение
+}
+
+/**
+ * @return mysqli
+ */
+function getDatabaseConnect()
+{
+    $env = getEnvs('../.env'); // вызов функции которая получает настройки подключения к базе
+    $conn = new mysqli($env['servername'], $env['username'], $env['password'], $env['dbname']); // создание подключения
+    // Check connection
+    if ($conn->connect_error) { // проверка наличие ошибки
+        die("Connection failed: " . $conn->connect_error); // вывод ошибки
+    }
+
+    if (isset($_REQUEST['do']) && $_REQUEST['do'] == 'migration') { // проверка приходит ли параметр /?do=migration
+        include_once ('../source/migration.php'); // подключение файла миграций
+    }
+
+    $sql = 'select count(*) as user_count from users'; // формирование агрегатного запроса к базе (подсчет количества пользователей)
+    $checkSql = $conn->query($sql); // исполнение запроса
+    if($checkSql) { // проверка результата
+        $usersCount = $checkSql->fetch_assoc(); // представление результата в виде массива
+    }
+    if ($conn->error) { // проверка ошибок запроса
+        print_r($conn->error); // вывод ошибок (если база пустая ошибка скажет что таблицы users не существуе)
+        echo '<br>No data in database. Do you want to <a href="/?do=migration">run migration</a>?'; // и тогда выводим ссылку которая запустит миграцию
+        die;
+    }
+
+    return $conn; // вовзврат соендинения с базой
 }
 
 /**
@@ -24,11 +54,11 @@ function getEnvs($filename)
  */
 function auth($conn, $id)
 {
-    $current_time = time();
-    $hash = base64_encode(substr($current_time, 0, strlen($current_time) - strlen($id)) . $id . '1984' . strlen($id));
-    $_SESSION['session_hash'] = $hash;
-    setcookie('session_hash', $hash);
-    $conn->query('update users set last_login = "' . $current_time . '" where id = ' . $id);
+    $current_time = time(); // записываю в переменную unix время
+    $hash = base64_encode(substr($current_time, 0, strlen($current_time) - strlen($id)) . $id . '1984' . strlen($id)); // создаю хеш строку
+    $_SESSION['session_hash'] = $hash; // записываю хеш строку в сессию
+    setcookie('session_hash', $hash); // записываю хеш строку в кукис
+    $conn->query('update users set last_login = "' . $current_time . '" where id = ' . $id); // обновляю в базе время последнего логина пользователя
 }
 
 /**
@@ -39,6 +69,7 @@ function auth($conn, $id)
  */
 function showCategoriesSelector(array $categoryList, int $categoryNumber, int $item)
 {
+    # циклом по категориям формирую селектор категорий для каждой строки таблицы
     $categorySelector = '<form method="get">
     <input type="hidden" value="' . $item . '" name="item" /> <!-- скрытое поле с id элемента -->
     <select name="update_cat" onchange="this.form.submit();">';
@@ -58,7 +89,7 @@ function showCategoriesSelector(array $categoryList, int $categoryNumber, int $i
  */
 function sorter(array $arr, bool $descStatus)
 {
-    if (!isset($_REQUEST['sort'])) return $arr;
+    if (!isset($_REQUEST['sort'])) return $arr; // если нет параметра сортировки возвращаю исходный массив без изменений
 
     # сортировка массива на основе параметров запроса
     switch (str_replace('-', '', $_REQUEST['sort'])) {
@@ -102,8 +133,8 @@ function sorter(array $arr, bool $descStatus)
  */
 function changeCategory($conn, int $item, int $update_cat)
 {
-    $conn->query('update user_request set category = "' . $update_cat . '" where id = ' . $item);
-    header('Location: /');
+    $conn->query('update user_request set category = "' . $update_cat . '" where id = ' . $item); // записываю новое значение категории в базу данных
+    header('Location: /'); // переадресация на главную страницу
 }
 
 /**
@@ -111,9 +142,9 @@ function changeCategory($conn, int $item, int $update_cat)
  */
 function getUserId()
 {
-    if(empty($_COOKIE['session_hash'])) return;
-    $session_hash = explode('1984', base64_decode($_COOKIE['session_hash']));
-    return substr($session_hash[0], strlen($session_hash[0]) - $session_hash[1]);;
+    if(empty($_COOKIE['session_hash'])) return; // если нет кукис возвращаю null
+    $session_hash = explode('1984', base64_decode($_COOKIE['session_hash'])); // расшифровка кукис и разбиение на параметры
+    return substr($session_hash[0], strlen($session_hash[0]) - $session_hash[1]); // возвращаю id пользователя
 }
 
 /**
@@ -123,6 +154,6 @@ function getUserId()
  */
 function getUserData($conn, $userId)
 {
-    $userData = $conn->query('select * from users where id = ' . $userId);
-    return $userData->fetch_assoc();
+    $userData = $conn->query('select * from users where id = ' . $userId); // получаю все данные пользователя из базы
+    return $userData->fetch_assoc(); // представление результата в виде массива
 }

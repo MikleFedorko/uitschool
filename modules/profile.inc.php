@@ -1,19 +1,12 @@
 <?php
 
-$name = '';
-$destination = '/avatars/no_avatar.png';
-
-$sql = 'select user_name, avatar_src from users where id = ' . $userId;
-$userData = $conn->query($sql);
-$user = $userData->fetch_assoc();
-if ($conn->error) {
-    print_r($conn->error);
-    die;
+$name = $user['user_name']; // присваиваю в переменную представления имя пользователя
+$destination = $user['avatar_src']; // присваиваю в переменную представления аватар пользователя
+if(!$destination){ // если пусто
+    $destination = '/avatars/no_avatar.png'; // задал ссылку на аватар по умолчанию
 }
-$name = $user['user_name'];
-if ($user['avatar_src']) $destination = $user['avatar_src'];
 
-if (!empty($_FILES) && empty($_REQUEST['name'])) {
+if (!empty($_FILES) && empty($_REQUEST['name'])) { // если пришел файл и не пришло имя
     try {
 
         // Undefined | Multiple Files | $_FILES Corruption Attack
@@ -58,11 +51,8 @@ if (!empty($_FILES) && empty($_REQUEST['name'])) {
             throw new RuntimeException('Invalid file format.');
         }
 
-        $sql = 'select avatar_src from users where id = ' . $userId;
-        $fileData = $conn->query($sql);
-        $file = $fileData->fetch_assoc();
-        $path = '../public/' . $file['avatar_src'];
-        if ($file['avatar_src'] && file_exists($path)) unlink($path);
+        $path = '../public/' . $user['avatar_src']; // задаю путь к файлу аватары
+        if ($user['avatar_src'] && file_exists($path)) unlink($path); // удаляю старый факл если он существует
 
         // You should name it uniquely.
         // DO NOT USE $_FILES['avatar']['name'] WITHOUT ANY VALIDATION !!
@@ -70,21 +60,21 @@ if (!empty($_FILES) && empty($_REQUEST['name'])) {
         $destination = sprintf('../public/avatars/%s.%s',
             sha1_file($_FILES['avatar']['tmp_name']),
             $ext
-        );
+        ); // формирую путь куда будет сохранен загруженный файл
         if (!move_uploaded_file(
             $_FILES['avatar']['tmp_name'],
             $destination
-        )) {
+        )) { // загружаю файл
             $destination = false;
             throw new RuntimeException('Failed to move uploaded file.');
         }
 
-        $destination = str_replace('../public/', '', $destination);
-        $conn->query('update users set avatar_src = "' . $destination . '" where id = ' . $userId);
+        $destination = str_replace('../public/', '', $destination); // подготавливаю путь для сохранения в базу
+        $conn->query('update users set avatar_src = "' . $destination . '" where id = ' . $userId); // обновляю ссылку на аватар в базе
         if ($conn->error) {
             print_r($conn->error);
             die;
-        } else {
+        } else { // если нет ошибок возвращаю в ответ на аякс запрос json строку со ссылкой на аватар
             header('Content-Type: application/json');
             print_r("'" . json_encode(["path" => $destination]) . "'");
             die;
@@ -95,13 +85,13 @@ if (!empty($_FILES) && empty($_REQUEST['name'])) {
     }
 }
 
-if (!empty($_REQUEST['name'])) {
-    $name = strip_tags($_REQUEST['name']);
-    $conn->query('update users set user_name = "' . $name . '" where id = ' . $userId);
+if (!empty($_REQUEST['name'])) { // если пришло имя пользователя
+    $name = strip_tags($_REQUEST['name']); // удаляю теги
+    $conn->query('update users set user_name = "' . $name . '" where id = ' . $userId); // сохраняю имя пользователя
     if ($conn->error) {
         print_r($conn->error);
         die;
     }
 }
 
-include_once('../view/profile.php');
+include_once('../view/profile.php'); // подключаю представление
