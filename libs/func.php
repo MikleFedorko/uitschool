@@ -11,6 +11,7 @@ function getEnvs($filename)
 ', $envFile); // построчное разбиение на элементы массива
     $env = [];
     foreach ($envData as $param) { // цикл по строкам
+        if(!strlen($param)) continue;
         $item = explode('=', $param); // разбиение по знаку =
         $env[trim($item[0])] = trim($item[1]); // формирование массива $env с удалением лишних пробелов
     }
