@@ -6,7 +6,7 @@
  ************************************************************************/
 
 ini_set('display_errors', 1); // режим отоборажения ошибок
-session_start(); // стартую сессию http://php.net/manual/ru/function.session-start.php
+session_start();
 
 require_once('../libs/func.php'); // включение библиотеки функций
 
