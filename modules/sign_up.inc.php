@@ -1,7 +1,5 @@
 <?php
 
-if(!empty($userId)) header('Location: /');
-
 if (!empty($_REQUEST['email'])
     && !empty($_REQUEST['password'])
     && !empty($_REQUEST['confirm'])

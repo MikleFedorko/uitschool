@@ -1,7 +1,5 @@
 <?php
 
-if(!empty($userId)) header('Location: /');
-
 if (!empty($_REQUEST['email']) && !empty($_REQUEST['password'])) { // проверка что в запросе пришли и логин и пароль
     $email = strip_tags($_REQUEST['email']); // удаляю теги из логина
     $result = $conn->query('select * from users where email = "' . $email . '" and user_password = "' . md5($_REQUEST['password']) . '"'); // проверяю наличие пользователя с переданными параметрами в базе
