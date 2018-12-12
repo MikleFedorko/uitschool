@@ -23,7 +23,7 @@ $content = '
             <th><span>' . @$arrowId . '</span><a href="?sort=' . $descParam . 'id">id</a><span>' . @$arrowId . '</span></th>
             <th>user link</th>
             <th>comment</th>
-            <th><span>' . @$arrowCategory . '</span><a href="?sort=' . $descParam . 'categoryName">category</a><span>' . @$arrowCategory . '</span></th>
+            <th><span>' . @$arrowCategoryName . '</span><a href="?sort=' . $descParam . 'categoryName">category</a><span>' . @$arrowCategoryName . '</span></th>
             <th><span>' . @$arrowTotalSpent . '</span><a href="?sort=' . $descParam . 'total_spent">total spent, usd</a><span>' . @$arrowTotalSpent . '</span></th>
             <th><span>' . @$arrowCreatedAt . '</span><a href="?sort=' . $descParam . 'created_at">created at</a><span>' . @$arrowCreatedAt . '</span></th>
             <th>Actions</th>
@@ -53,7 +53,7 @@ $content .= '<tr>
     <th><span>' . @$arrowId . '</span><a href="?sort=' . $descParam . 'id">id</a><span>' . @$arrowId . '</span></th>
     <th>user link</th>
     <th>comment</th>
-    <th><span>' . @$arrowCategory . '</span><a href="?sort=' . $descParam . 'categoryName">category</a><span>' . @$arrowCategory . '</span></th>
+    <th><span>' . @$arrowCategoryName . '</span><a href="?sort=' . $descParam . 'categoryName">category</a><span>' . @$arrowCategoryName . '</span></th>
     <th><span>' . @$arrowTotalSpent . '</span><a href="?sort=' . $descParam . 'total_spent">total spent</a><span>' . @$arrowTotalSpent . '</span></th>
     <th><span>' . @$arrowCreatedAt . '</span><a href="?sort=' . $descParam . 'created_at">created at</a><span>' . @$arrowCreatedAt . '</span></th>
     <th>Actions</th>
