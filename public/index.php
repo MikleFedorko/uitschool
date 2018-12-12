@@ -1,7 +1,7 @@
 <?php
 /************************************************************************
  *
- *  Домашнее задание
+ *  Follow the instructions in readme.md to deploy project
  *
  ************************************************************************/
 
@@ -16,7 +16,7 @@ $conn = getDatabaseConnect(); // инициация соендинения с б
 if($userId) $user = getUserData($conn, $userId); // получаю все данные пользователя из базы
 
 $path = @$_REQUEST['path'];
-if(empty($userId)) $path = 'auth';
+if(empty($path) && empty($userId)) $path = 'auth';
 elseif(empty($path) && $userId) $path = 'json_table';
 
 include_once("../modules/$path.inc.php");
