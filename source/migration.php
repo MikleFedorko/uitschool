@@ -13,7 +13,7 @@ roles         varchar(128) null,
 avatar_src    varchar(255) null
 );";
 $conn->query($sql);
-if($conn->errsor) {
+if($conn->error) {
     print_r($conn->error);
     die;
 }
@@ -55,12 +55,38 @@ if($conn->error) {
     die;
 }
 
+$sql = "create table categories
+(
+  id   int auto_increment
+    primary key,
+  name varchar(64) null,
+  constraint categories_id_uindex
+  unique (id)
+);
+
+";
+$conn->query($sql);
+if($conn->error) {
+    print_r($conn->error);
+    die;
+}
+
 $categoryJson = '{"4":"Assets","7":"Christmas","2":"Clothes","3":"Easter","5":"Gameplay","8":"Halloween","6":"Release theme","1":"Scenery","10":"St. Patricks","9":"St.Valentine","11":"Stylist"}';
 $sql = "insert into app_settings (name, value) values ('categories', '" . $categoryJson . "')";
 $conn->query($sql);
 if($conn->error) {
     print_r($conn->error);
     die;
+}
+
+$categories = json_decode($categoryJson, true);
+foreach($categories as $key => $val){
+    $sql = "insert into categories (id, name) values ($key, '" . $val . "')";
+    $conn->query($sql);
+    if($conn->error) {
+        print_r($conn->error);
+        die;
+    }
 }
 
 $filename = '../source/testJsonDataToSort.txt';
