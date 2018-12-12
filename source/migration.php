@@ -72,13 +72,6 @@ if($conn->error) {
 }
 
 $categoryJson = '{"4":"Assets","7":"Christmas","2":"Clothes","3":"Easter","5":"Gameplay","8":"Halloween","6":"Release theme","1":"Scenery","10":"St. Patricks","9":"St.Valentine","11":"Stylist"}';
-$sql = "insert into app_settings (name, value) values ('categories', '" . $categoryJson . "')";
-$conn->query($sql);
-if($conn->error) {
-    print_r($conn->error);
-    die;
-}
-
 $categories = json_decode($categoryJson, true);
 foreach($categories as $key => $val){
     $sql = "insert into categories (id, name) values ($key, '" . $val . "')";

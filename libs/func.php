@@ -156,5 +156,9 @@ function getUserId()
 function getUserData($conn, $userId)
 {
     $userData = $conn->query('select * from users where id = ' . $userId); // получаю все данные пользователя из базы
+    if($conn->error) {
+        print_r($conn->error);
+        die;
+    }
     return $userData->fetch_assoc(); // представление результата в виде массива
 }

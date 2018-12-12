@@ -2,17 +2,19 @@
 
 $descParam = '-'; // начальное значение параметра типа сортировки для формирования ссылки
 $arrow = '&uarr;'; // начальное значение типа стрелки
+$descStatus = false; // начальное значение для переменной хранящей состояние обратной сортировки для проверки условий
 
-$sql = 'select value from app_settings where name = "categories"'; // формирование запроса для получения списка категорий
-$categoriesData = $conn->query($sql); // исполнение запроса
-$categoriesValue = $categoriesData->fetch_assoc(); // представление результата в виде массива
+$categoriesData = $conn->query('select * from categories'); // исполнение запроса
+$categoriesArray = $categoriesData->fetch_all(); // представление результата в виде массива
 if ($conn->error) { // обработка ошибок запроса
     print_r($conn->error);
     die;
 }
-$categories = json_decode($categoriesValue['value'], true); // формирую массив из строки результатов запроса
 
-$descStatus = false; // начальное значение для переменной хранящей состояние обратной сортировки для проверки условий
+$categories = [];
+while ($row = array_shift($categoriesArray)) {
+    $categories[array_shift($row)] = array_shift($row);
+}
 
 # Сохраняю в куки значение фильтра
 if (isset($_REQUEST['search'])) setcookie("search", $_REQUEST['search']);
@@ -59,5 +61,4 @@ if (isset($_REQUEST['sort'])) { // проверка на параметр сор
     $$sortOrder = $arrow; // присвоение текущей стрелки
 }
 
-$user = getUserData($conn, $userId);
 require_once('../view/template.php'); // подключаю представление

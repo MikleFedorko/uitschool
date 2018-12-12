@@ -3,8 +3,7 @@
 $content = '
 <div class="auth_container">
 <h1>Sign in</h1>
-<form method="post">
-  <input type="hidden" name="action" value="auth">
+<form method="post" action="/auth">
   <button disabled class="btn-danger col-md-12">' . $errorMessage . '</button>
   <div class="form-group">
     <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">

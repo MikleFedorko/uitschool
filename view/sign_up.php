@@ -3,8 +3,7 @@
 $content = '
 <div class="auth_container">
 <h1>Sign up</h1>
-<form method="post">
-  <input type="hidden" name="action" value="sign_up">
+<form method="post" action="/sign_up">
   <div class="form-group">
       <button disabled class="btn-danger col-md-12">' . $errorMessage . '</button>
   </div>
