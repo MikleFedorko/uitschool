@@ -63,7 +63,33 @@ $sql = "create table categories
   constraint categories_id_uindex
   unique (id)
 );
+";
+$conn->query($sql);
+if($conn->error) {
+    print_r($conn->error);
+    die;
+}
+$sql = "create table tags
+(
+	id int auto_increment,
+	name varchar(32) not null,
+	constraint tags_pk
+		primary key (id)
+);
+";
+$conn->query($sql);
+if($conn->error) {
+    print_r($conn->error);
+    die;
+}
 
+$sql = "create table request_tags
+(
+    tag_id int not null,
+	request_id int not null,
+	constraint request_tags_pk
+		primary key (tag_id, request_id)
+);
 ";
 $conn->query($sql);
 if($conn->error) {
@@ -95,5 +121,58 @@ foreach($user_r as $k => $r) {
     }
 }
 
+$sql = 'select * from user_request';
+$userRequestData = $conn->query($sql); // выполняю запрос
+if ($conn->error) { // обрабатываю ошибки
+    print_r($conn->error);
+    die;
+}
+$userRequest = $userRequestData->fetch_all(MYSQLI_ASSOC);
+$tags = [];
+foreach ($userRequest as $val) {
+    foreach (json_decode($val['tags'], true) as $tag) {
+        if (!in_array($tag, $tags)) {
+            $tags[] = $tag;
+
+            $sql = 'insert into tags (name) value ("' . $tag . '")';
+            $conn->query($sql); // выполняю запрос
+            if ($conn->error) { // обрабатываю ошибки
+                print_r($conn->error);
+                die;
+            }
+        }
+    }
+}
+
+$tags = [];
+foreach ($userRequest as $val) {
+    foreach (json_decode($val['tags'], true) as $tag) {
+        if (!in_array($tag, $tags)) {
+            $tags[] = $tag;
+
+            $sql = 'select id from tags where name = "' . $tag . '"';
+            $tagId = $conn->query($sql); // выполняю запрос
+            if ($conn->error) { // обрабатываю ошибки
+                print_r($conn->error);
+                die;
+            }
+            $tagId = $tagId->fetch_assoc();
+
+            $sql = 'insert into request_tags (tag_id, request_id)  value (' . $tagId['id'] . ', ' . $val['id'] . ')';
+            $conn->query($sql); // выполняю запрос
+            if ($conn->error) { // обрабатываю ошибки
+                print_r($conn->error);
+                die;
+            }
+        }
+    }
+}
+
+$sql = 'alter table user_request drop column tags';
+$conn->query($sql); // выполняю запрос
+if ($conn->error) { // обрабатываю ошибки
+    print_r($conn->error);
+    die;
+}
 
 header('Location: /');

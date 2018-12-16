@@ -26,6 +26,7 @@ $content = '
             <th><span>' . @$arrowCategoryName . '</span><a href="?sort=' . $descParam . 'categoryName">category</a><span>' . @$arrowCategoryName . '</span></th>
             <th><span>' . @$arrowTotalSpent . '</span><a href="?sort=' . $descParam . 'total_spent">total spent, usd</a><span>' . @$arrowTotalSpent . '</span></th>
             <th><span>' . @$arrowCreatedAt . '</span><a href="?sort=' . $descParam . 'created_at">created at</a><span>' . @$arrowCreatedAt . '</span></th>
+            <th>Tags</th>
             <th>Actions</th>
         </tr></thead>';
 
@@ -46,6 +47,7 @@ foreach ($userRequest as $row) {
             <td title="' . strlen($row['categoryName']) . ' symbols">' . $categorySelector . '</td>
             <td title="' . (strlen($row['total_spent']) + 1) . ' symbols">$' . $row['total_spent'] . '</td>
             <td title="' . strlen(date('Y-m-d', $row['created_at'])) . ' symbols">' . date('Y-m-d', $row['created_at']) . '</td>
+            <td>' . $row['tagNames'] . '</td>
             <td><a class="btn btn-danger" href="/delete?item=' . $row['id'] . '">Delete</a></td>
         </tr></div>';
 }
@@ -56,6 +58,7 @@ $content .= '<tr>
     <th><span>' . @$arrowCategoryName . '</span><a href="?sort=' . $descParam . 'categoryName">category</a><span>' . @$arrowCategoryName . '</span></th>
     <th><span>' . @$arrowTotalSpent . '</span><a href="?sort=' . $descParam . 'total_spent">total spent</a><span>' . @$arrowTotalSpent . '</span></th>
     <th><span>' . @$arrowCreatedAt . '</span><a href="?sort=' . $descParam . 'created_at">created at</a><span>' . @$arrowCreatedAt . '</span></th>
+    <th>Tags</th>
     <th>Actions</th>
 </tr></table>';
 //echo $content, '<p class="center">Array size: ' . sizeof($arr) . ' elements</p>'; // вывод таблицы

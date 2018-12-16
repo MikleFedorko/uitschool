@@ -34,17 +34,18 @@ if (isset($_REQUEST['sort']) && $_REQUEST['sort'][0] == '-') { // проверк
     $arrow = '&darr;';
 }
 
-$sql = 'select * from user_request'; // получаю все данные из таблицы user_request
+$sql = 'select c.name as categoryName , group_concat(t.name SEPARATOR ", ") as tagNames, r.* from user_request r 
+left join categories c on c.id = r.category
+left join request_tags rt on rt.request_id = r.id
+left join tags t on rt.tag_id = t.id
+group by r.id';
+
 $userRequestData = $conn->query($sql); // выполняю запрос
-$userRequest = $userRequestData->fetch_all(MYSQLI_ASSOC); // предствляю результат в виде ассоциативного массива
 if ($conn->error) { // обрабатываю ошибки
     print_r($conn->error);
     die;
 }
-
-foreach ($userRequest as $key => $row) {
-    $userRequest[$key]['categoryName'] = $categories[$row['category']]; // добавление ключа categoryName с именем категории
-}
+$userRequest = $userRequestData->fetch_all(MYSQLI_ASSOC); // предствляю результат в виде ассоциативного массива
 
 if (isset($_REQUEST['item'], $_REQUEST['update_cat'])) { // проверка что пришла команда на изменение категории
     $item = array_filter($userRequest, function ($innerArray) { // поиск в массиве строк таблицы нужной строки
