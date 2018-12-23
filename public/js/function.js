@@ -2,13 +2,13 @@
 
 $(document).ready(function () {
 
-    $('form[name="auth"]').submit(function (e) {
-        e.preventDefault();
+    $('form[name="auth"]').submit(function (event) {
+        event.preventDefault();
         let errorBox = $('#errorBox');
-        errorBox.html('');
         let data = $(this).serializeArray();
         let validStatus = true;
 
+        errorBox.html('');
         $.each(data, function (index, field) {
             if (!field.value) {
                 validStatus = false;
@@ -17,9 +17,9 @@ $(document).ready(function () {
                 hideErrorBox(errorBox);
             }
         });
-        if (validStatus) {
 
-            save($(this).data('action'), $(this).serializeArray());
+        if (validStatus) {
+            save(errorBox, $(this).data('action'), data);
         }
     });
 
@@ -29,7 +29,7 @@ $(document).ready(function () {
         }, 5000);
     }
 
-    function save(action, data) {
+    function save(errorBox, action, data) {
         $.ajax({
             type: "post",
             url: action,
@@ -37,24 +37,18 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (resp) {
                 if(resp.error){
-                    let errorBox = $('#errorBox');
                     errorBox.html('<span>' + resp.error + '</span>');
                     errorBox.show();
                     hideErrorBox(errorBox);
                 } else {
-                    window.location = '/profile';
+                    window.location = resp.path;
                 }
             },
             error: function (jqXHR, exception) {
-                console.log(jqXHR.responseJSON);
                 if (jqXHR.responseJSON && jqXHR.responseJSON.hasOwnProperty('errors')) {
                     $.each(jqXHR.responseJSON.errors, function (errorKey, error) {
                         $.each(error, function (messageKey, message) {
-                            $.notify({
-                                message: message
-                            }, {
-                                type: 'danger'
-                            });
+                            console.log(exception, message);
                         });
                     });
                 }

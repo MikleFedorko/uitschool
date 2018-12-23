@@ -16,7 +16,7 @@ $content = '
     <a href="sign_up">Sign up</a>
   </div>
   <div class="form-group">
-      <input type="submit" value="Submit" class="btn btn-primary" name="auth" />
+      <input type="submit" value="Submit" class="btn btn-primary" />
   </div>
 </form>
 </div>
