@@ -3,10 +3,10 @@
 $content = '
 <div class="auth_container">
 <h1>Sign in</h1>
-<form method="post" action="/auth">
-  <button disabled class="btn-danger col-md-12">' . $errorMessage . '</button>
+<form method="post" data-action="/auth" name="auth" autocomplete="off">
+    <div id="errorBox" class="alert alert-danger" role="alert" style="display: none"></div>
   <div class="form-group">
-    <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+    <input name="email" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
     <small id="emailHelp" class="form-text text-muted">We\'ll never share your email with anyone else.</small>
   </div>
   <div class="form-group">
@@ -16,7 +16,7 @@ $content = '
     <a href="sign_up">Sign up</a>
   </div>
   <div class="form-group">
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <input type="submit" value="Submit" class="btn btn-primary" name="auth" />
   </div>
 </form>
 </div>

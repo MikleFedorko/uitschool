@@ -1,6 +1,4 @@
-<?php
-
-echo '<!DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
     <title>Home Task</title>
@@ -10,7 +8,7 @@ echo '<!DOCTYPE HTML>
     <meta charset="utf-8">
 </head>
 <body>
-' . $content . '
+<?=$content?>
 <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -28,17 +26,17 @@ echo '<!DOCTYPE HTML>
     form_data.append("avatar", file_data);
     $.ajax({
         url: "/profile",
-        dataType: \'script\',
+        dataType: 'script',
         cache: false,
         contentType: false,
         processData: false,
         data: form_data,                         
-        type: \'post\',
+        type: 'post',
         success: function(response){
-            $("img#avatar").attr("src", $.parseJSON(response.replace("\'", "").replace("\'", "")).path);
+            $("img#avatar").attr("src", $.parseJSON(response.replace(/'/g, "")).path);
         }
     });
   }
 </script>
 </body>
-</html>';
+</html>
